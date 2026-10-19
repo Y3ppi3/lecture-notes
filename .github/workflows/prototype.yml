@@ -48,7 +48,7 @@ jobs:
         with:
           distribution: temurin
           java-version: "17"
-      - uses: gradle/actions/setup-gradle@v4
+      - uses: gradle/actions/setup-gradle@v6
       - run: chmod +x gradlew
       - name: Сборка (R8, только HTTPS, подпись debug-ключом)
         run: ./gradlew --no-daemon assembleDemo -PlectureApiUrl="${{ needs.prepare.outputs.api_url }}/"
@@ -80,7 +80,7 @@ jobs:
         with:
           distribution: temurin
           java-version: "17"
-      - uses: gradle/actions/setup-gradle@v4
+      - uses: gradle/actions/setup-gradle@v6
       - run: npm ci
       - name: Генерация нативного проекта
         run: npx expo prebuild --platform android --no-install
