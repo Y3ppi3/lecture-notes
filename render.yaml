@@ -9,8 +9,8 @@ services:
     plan: free            # для показа без «засыпания» выберите starter
     region: frankfurt
     rootDir: backend
-    dockerfilePath: ./backend/Dockerfile
-    dockerContext: ./backend
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
     healthCheckPath: /api/health
     envVars:
       - key: ENVIRONMENT
