@@ -61,7 +61,7 @@ jobs:
         with:
           distribution: temurin
           java-version: "17"
-      - uses: gradle/actions/setup-gradle@v4
+      - uses: gradle/actions/setup-gradle@v6
       - run: chmod +x gradlew
       - run: ./gradlew --no-daemon assembleDebug lintDebug
       - name: Release build (R8, unsigned)
