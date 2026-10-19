@@ -1,0 +1,37 @@
+# Секреты
+.env
+.env.*
+!.env.example
+*.jks
+*.keystore
+*.p12
+*.pem
+# Публичные корневые сертификаты Минцифры для API Сбера — не секрет, нужны в репозитории
+!backend/certs/*.pem
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+*.db
+
+# Node / Expo
+node_modules/
+.expo/
+dist/
+mobile-rn/android/
+mobile-rn/ios/
+
+# Android
+.gradle/
+.kotlin/
+local.properties
+build/
+.idea/
+*.iml
+captures/
+
+.DS_Store

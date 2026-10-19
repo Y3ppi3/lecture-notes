@@ -1,0 +1,72 @@
+# Render Blueprint: сервер прототипа (API + страница скачивания APK), PostgreSQL и Key Value (Redis).
+# Развёртывание: Render Dashboard → New → Blueprint → выбрать этот репозиторий.
+# Значения с sync: false Render попросит ввести при создании.
+
+services:
+  - type: web
+    name: lecture-notes-api
+    runtime: docker
+    plan: free            # для показа без «засыпания» выберите starter
+    region: frankfurt
+    rootDir: backend
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    healthCheckPath: /api/health
+    envVars:
+      - key: ENVIRONMENT
+        value: production
+      - key: JWT_SECRET
+        generateValue: true
+      - key: DATABASE_URL
+        fromDatabase:
+          name: lecture-notes-db
+          property: connectionString
+      - key: REDIS_URL
+        fromService:
+          type: keyvalue
+          name: lecture-notes-cache
+          property: connectionString
+      # Прокси Render дописывает свой адрес в конец X-Forwarded-For: адрес клиента — второй с конца.
+      - key: TRUSTED_PROXY_COUNT
+        value: "2"
+      # 512 МБ памяти на бесплатном тарифе — одного процесса достаточно.
+      - key: WEB_CONCURRENCY
+        value: "1"
+
+      # Нейросети сервера (Сбер). Если ключей нет — поставьте none: пользователи введут свои ключи в приложении.
+      - key: LLM_PROVIDER
+        value: gigachat
+      - key: LLM_API_KEY
+        sync: false
+      - key: LLM_SCOPE
+        value: GIGACHAT_API_PERS
+      - key: LLM_MODEL
+        value: GigaChat-2-Pro
+      - key: STT_PROVIDER
+        value: salutespeech
+      - key: STT_API_KEY
+        sync: false
+      - key: STT_SCOPE
+        value: SALUTE_SPEECH_PERS
+      - key: ALLOW_USER_KEYS
+        value: "true"
+
+      # Ссылки на APK для страницы скачивания (заполняются после сборки).
+      - key: DEMO_APK_URL
+        sync: false
+      - key: DEMO_APK_RN_URL
+        sync: false
+
+  - type: keyvalue
+    name: lecture-notes-cache
+    plan: free
+    region: frankfurt
+    ipAllowList: []       # доступ только из внутренней сети Render
+    maxmemoryPolicy: allkeys-lru
+
+databases:
+  - name: lecture-notes-db
+    plan: free            # бесплатная база удаляется через 30 дней — для показа достаточно
+    region: frankfurt
+    databaseName: lectures
+    user: lectures

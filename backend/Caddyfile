@@ -1,0 +1,24 @@
+{$DOMAIN} {
+	encode zstd gzip
+
+	# Аудиофрагмент до 25 МБ + служебные поля
+	request_body {
+		max_size 27MB
+	}
+
+	header {
+		-Server
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+	}
+
+	# Документация и служебные пути наружу не публикуются
+	@blocked path /docs* /openapi.json /redoc*
+	respond @blocked 404
+
+	reverse_proxy api:8000 {
+		transport http {
+			read_timeout 300s
+			write_timeout 300s
+		}
+	}
+}

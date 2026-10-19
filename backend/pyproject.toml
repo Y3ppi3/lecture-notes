@@ -1,0 +1,24 @@
+[project]
+name = "lecture-notes-api"
+version = "1.1.0"
+requires-python = ">=3.12"
+
+[tool.ruff]
+line-length = 120
+target-version = "py312"
+extend-exclude = ["alembic/versions"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "S", "UP", "ASYNC", "RUF"]
+ignore = [
+  "B008",   # Depends()/File() в аргументах по умолчанию — стандарт FastAPI
+  "RUF001", "RUF002", "RUF003",  # кириллица в строках и комментариях
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["S101", "S105", "S106", "S107", "S603", "S607"]
+"app/api/demo.py" = ["E501"]  # HTML-шаблон страницы
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+filterwarnings = ["ignore::DeprecationWarning"]
